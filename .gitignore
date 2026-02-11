@@ -27,3 +27,22 @@ logs/
 *.csv
 *.parquet
 data/raw/
+
+mkdir -p infrastructure/terraform
+mkdir -p src/extractors  
+mkdir -p data/raw
+mkdir -p config
+mkdir -p scripts
+mkdir -p docs
+
+# Credentials & Config
+config/madrid-newsletter-key.json
+config/*.json
+
+# Data files  
+data/raw/
+data/processed/
+
+# Terraform
+infrastructure/terraform/*.tfstate*
+infrastructure/terraform/.terraform/
