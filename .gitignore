@@ -1,0 +1,29 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Google Cloud Credentials (CRITICAL - don't commit these!)
+*.json
+*key.json
+madrid-newsletter-key.json
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+
+# Environment files
+.env
+.env.local
+
+# dbt
+target/
+dbt_packages/
+logs/
+
+# Data files
+*.csv
+*.parquet
+data/raw/
