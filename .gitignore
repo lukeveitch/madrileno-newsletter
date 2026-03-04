@@ -28,12 +28,6 @@ logs/
 *.parquet
 data/raw/
 
-mkdir -p infrastructure/terraform
-mkdir -p src/extractors  
-mkdir -p data/raw
-mkdir -p config
-mkdir -p scripts
-mkdir -p docs
 
 # Credentials & Config
 config/madrid-newsletter-key.json

@@ -2,11 +2,15 @@ import requests
 import json
 from datetime import datetime
 from typing import Dict, List, Any
+import os 
+from dotenv import load_dotenv
+
+load_dotenv()
 
 class MadridEventsFetcher:
 
     def __init__(self):
-        self.newsdata_api_key = "pub_c42a57a2395e42f98465b3b0340984f0"
+        self.newsdata_api_key = os.getenv("NEWSDATA_API_KEY")
         self.sources = {
             'newsdata': 'https://newsdata.io/api/1/latest',
             'cultural_events': 'https://datos.madrid.es/egob/catalogo/206974-0-agenda-eventos-culturales-100.json',
