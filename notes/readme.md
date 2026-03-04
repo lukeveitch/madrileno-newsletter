@@ -63,3 +63,68 @@ This creates a view in your `silver` dataset in BigQuery.
 | `sources.yml` | Tells dbt where your bronze tables are |
 | `stg_news_articles.sql` | The actual transformation logic |
 | `profiles.yml` | BigQuery connection credentials |
+
+---
+
+## Session Notes: 2024-03-04 — Project Structure & Cleanup
+
+**Where we are:** Bronze layer is complete (4 tables in BigQuery). Starting to build dbt staging models (silver layer). Reviewed project structure against best practices.
+
+### Standard Data Engineering Project Structure
+
+A well-organized DE project separates concerns clearly:
+
+```
+project-root/
+├── .github/workflows/          # CI/CD pipelines
+├── airflow/dags/               # Orchestration DAGs
+├── dbt/
+│   ├── models/
+│   │   ├── staging/            # Silver layer (1:1 with sources, cleaning)
+│   │   ├── intermediate/       # Optional: complex joins
+│   │   └── marts/              # Gold layer (business entities)
+│   ├── macros/
+│   ├── tests/
+│   ├── seeds/
+│   └── dbt_project.yml
+├── infrastructure/terraform/   # IaC for cloud resources
+├── src/
+│   ├── extractors/             # API clients, data fetching
+│   └── loaders/                # Upload to warehouse
+├── tests/                      # Python unit tests
+├── config/                     # Config files (secrets gitignored)
+├── .env.example                # Template for environment variables
+├── .gitignore
+├── requirements.txt
+├── Makefile                    # Common commands
+└── README.md
+```
+
+**Why this matters (Separation of Concerns):**
+- Each folder has one job
+- Easier to onboard new team members
+- CI/CD can target specific folders
+- Debugging is simpler (you know where to look)
+- Project scales cleanly
+
+### Medallion Architecture (Bronze → Silver → Gold)
+
+| Layer | Purpose | Materialization | Your Tables |
+|-------|---------|-----------------|-------------|
+| **Bronze** | Raw data exactly as ingested | Tables | `newsdata_raw`, `cultural_events_raw`, `general_events_raw`, `news_articles_raw` |
+| **Silver** | Cleaned, typed, deduplicated, 1:1 with source | Views or Tables | `stg_news_articles`, `stg_cultural_events`, `stg_general_events` |
+| **Gold** | Business-ready aggregations, joins, metrics | Tables | `newsletter_content`, `weekly_events`, etc. |
+
+**Key principle:** Each layer builds on the previous. Bronze is your "source of truth" backup. Silver is your clean foundation. Gold answers business questions.
+
+### Cleanup Tasks Identified
+
+| Issue | Location | Fix |
+|-------|----------|-----|
+| Duplicate scripts | `scripts/upload_to_bronze*.py` (4 versions) | Keep only `_final.py`, delete others |
+| Nested dbt folder | `dbt/madrileno_newsletter_dbt/` | Flatten to `dbt/` at root |
+| Broken .gitignore | Contains `mkdir` commands (lines 31-36) | Remove those lines |
+| Hardcoded API key | `src/sample_data.py` | Move to `.env` file |
+| Empty directories | `docs/`, `data/processed/` | Remove or use |
+| No requirements.txt | Missing | Add Python dependencies |
+| Vague naming | `src/sample_data.py` | Rename to `src/extractors/fetch_sources.py` |
