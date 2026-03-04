@@ -1,0 +1,39 @@
+version: 2
+
+sources:
+  - name: bronze
+    database: madrid-newsletter
+    schema: bronze
+    description: "Raw data from external APIs - NewsData.io and Madrid Open Data"
+
+    tables:
+      - name: newsdata_raw
+        description: "Raw news articles from NewsData.io API"
+        columns:
+          - name: article_id
+            description: "Unique identifier for the article"
+          - name: title
+            description: "Article headline"
+          - name: description
+            description: "Article summary/description"
+          - name: link
+            description: "URL to the full article"
+          - name: pubDate
+            description: "Publication date in UTC"
+          - name: source_name
+            description: "Name of the news source"
+          - name: category
+            description: "Article categories (array)"
+          - name: language
+            description: "Article language"
+          - name: duplicate
+            description: "Flag indicating if article is a duplicate"
+
+      - name: cultural_events_raw
+        description: "Raw cultural events from Madrid Open Data API"
+
+      - name: general_events_raw
+        description: "Raw general events from Madrid Open Data API"
+
+      - name: news_articles_raw
+        description: "Combined news articles from all sources"
