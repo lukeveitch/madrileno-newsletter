@@ -128,3 +128,42 @@ project-root/
 | Empty directories | `docs/`, `data/processed/` | Remove or use |
 | No requirements.txt | Missing | Add Python dependencies |
 | Vague naming | `src/sample_data.py` | Rename to `src/extractors/fetch_sources.py` |
+
+---
+
+## Session Notes: 2024-03-04 — Environment Isolation (WSL vs Windows)
+
+**Context:** Tried to run `dbt debug` in PowerShell and got "dbt is not recognized" error, even though dbt works in WSL.
+
+### DE Concept: Environment Isolation
+
+WSL (Windows Subsystem for Linux) and Windows are **separate environments** that share a filesystem but have independent package installations:
+
+| Environment | Python/packages | Terminal | File paths |
+|-------------|-----------------|----------|------------|
+| **WSL (Linux)** | Installed separately | Ubuntu, WSL Bash | `/mnt/c/...` |
+| **Windows** | Installed separately | PowerShell, CMD | `C:\...` |
+
+**What this means:**
+- Installing `dbt` in WSL doesn't make it available in PowerShell
+- Each environment has its own `pip`, `python`, virtual environments
+- They access the same files, but through different path formats
+
+**Best practice:** Pick one environment and stick with it for consistency. For this project, **WSL** is the primary environment because:
+- GCP credentials are configured there
+- dbt profile (`~/.dbt/profiles.yml`) is set up there
+- Linux is the standard for production data engineering
+
+**VS Code tip:** Set WSL as your default terminal:
+1. `Ctrl+Shift+P` → "Terminal: Select Default Profile"
+2. Choose "Ubuntu (WSL)" or "WSL Bash"
+
+### Cleanup Tasks Completed
+
+| Task | Status |
+|------|--------|
+| Remove duplicate scripts | ✅ Done |
+| Fix .gitignore | ✅ Done |
+| Move API key to .env | ✅ Done |
+| Add requirements.txt | ✅ Done |
+| Add .env.example | ✅ Done |

@@ -39,4 +39,4 @@ data/processed/
 
 # Terraform
 infrastructure/terraform/*.tfstate*
-infrastructure/terraform/.terraform/
+infrastructure/terraform/.terraform/venv/
