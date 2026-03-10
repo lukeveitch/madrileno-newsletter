@@ -17,6 +17,8 @@ madrid-newsletter-key.json
 # Environment files
 .env
 .env.local
+.venv/
+venv/
 
 # dbt
 target/
