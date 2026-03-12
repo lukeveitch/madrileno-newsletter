@@ -1,0 +1,8 @@
+version: 2
+
+sources:
+  - name: news_data
+    database: "{{var('madrid-newsletter')}}"
+    tables:
+      - name: news_articles
+        description: "News articles from Newsdata.io API"
