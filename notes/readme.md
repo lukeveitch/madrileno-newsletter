@@ -66,6 +66,34 @@ This creates a view in your `silver` dataset in BigQuery.
 
 ---
 
+## dbt sources and `{{ source(...) }}`
+
+In dbt, `{{ source('source_name', 'table_name') }}` is a macro that resolves to a fully-qualified table reference based on your source definitions in `models/staging/sources.yml`.
+
+In this project:
+- `{{ source('bronze', 'cultural_events_raw') }}` becomes `madrid-newsletter.bronze.cultural_events_raw`.
+- A reference like `{{ source('newsdata', 'newsdata_articles') }}` is invalid here because there is no `newsdata` source defined in `sources.yml`.
+
+So the staging model `stg_madrid_events__cultural.sql` must select from the bronze raw table (e.g., `cultural_events_raw`), not from a non-existent `newsdata.newsdata_articles` source.
+
+---
+
+## Why `dbt_utils.generate_surrogate_key()` exists (and when to use it)
+
+`dbt_utils.generate_surrogate_key(...)` creates a deterministic row identifier (usually an MD5 hash) based on one or more columns. It’s useful when your source data does **not** have a stable unique key.
+
+In this project, the raw schema includes `article_id`, which is a natural candidate for a stable primary key. That means you usually do **not** need a surrogate key at all—just use `article_id` as your `id`.
+
+If the source did not provide a stable key, then you could fall back to something like:
+
+```sql
+{{ dbt_utils.generate_surrogate_key(['link', 'pubDate']) }} as id
+```
+
+But since `article_id` exists and is stable, the dbt model should just use it directly.
+
+---
+
 ## Session Notes: 2024-03-04 — Project Structure & Cleanup
 
 **Where we are:** Bronze layer is complete (4 tables in BigQuery). Starting to build dbt staging models (silver layer). Reviewed project structure against best practices.
