@@ -30,7 +30,12 @@ madrileno_newsletter_dbt:
       keyfile: /path/to/your/madrid-newsletter-key.json
       location: US
 ```
+✅ The `dataset` field is what determines the schema/dbt builds into (e.g., `dbt_dev`, `silver`). When you run `dbt run`, the models are created in whatever dataset is configured here.
 
+### Where `profiles.yml` lives
+
+- **WSL / Linux:** `~/.dbt/profiles.yml` (e.g., `/home/<you>/.dbt/profiles.yml`)
+- **Windows:** `%USERPROFILE%\.dbt\profiles.yml` 
 ---
 
 ## 3. Test dbt connection
@@ -195,3 +200,35 @@ WSL (Windows Subsystem for Linux) and Windows are **separate environments** that
 | Move API key to .env | ✅ Done |
 | Add requirements.txt | ✅ Done |
 | Add .env.example | ✅ Done |
+
+---
+
+## What `dbt run --select staging` does (and where the results go)
+
+When you run `dbt run --select staging`, dbt performs two main steps for each model in the `staging/` folder:
+
+1. **Compile** the Jinja SQL into plain SQL and write the compiled version into `target/compiled/...`.
+2. **Execute** that SQL in BigQuery, creating the model as a view/table in the target dataset.
+
+### Where the transformed data is placed
+
+- The results are written to **the dataset specified in your `profiles.yml`** (in your case, `dbt_dev`).
+- The view/table names are derived from the model filenames, e.g.:
+  - `stg_madrid_events__cultural` → `madrid-newsletter.dbt_dev.stg_madrid_events__cultural`
+  - `stg_madrid_events__general` → `madrid-newsletter.dbt_dev.stg_madrid_events__general`
+  - `stg_newsdata__articles` → `madrid-newsletter.dbt_dev.stg_newsdata__articles`
+
+### Why you saw errors
+
+- dbt compiles SQL and then runs it; the errors you saw were from BigQuery executing the compiled SQL (stored under `target/compiled/...`).
+- That’s why the failure messages reference `target/compiled/...` and not your original `.sql` file.
+
+### How to confirm results
+
+1. Open BigQuery Console
+2. Navigate to:
+   - Project: `madrid-newsletter`
+   - Dataset: `dbt_dev`
+3. Verify the view names match your model names.
+
+If you’d like, I can also help you adjust the profile so the models build into a different dataset (e.g., `silver`) instead of `dbt_dev`.
