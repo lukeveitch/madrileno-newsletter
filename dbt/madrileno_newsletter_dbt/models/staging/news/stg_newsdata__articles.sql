@@ -1,5 +1,5 @@
 with source as (
-    select * from {{ source('bronze', 'cultural_events_raw') }}
+    select * from {{ source('bronze', 'news_articles_raw') }}
 ),
 
 renamed as (
@@ -14,13 +14,13 @@ renamed as (
         country,
         category,
         datatype,
-        dtstart,
-        date(safe_cast(dtstart as timestamp)) as dtstart_date,
-        dtend,
-        time(safe_cast(dtend as timestamp)) as dtend_time,
         safe_cast(pubDate as timestamp) as pub_date,
+        date(safe_cast(pubDate as timestamp)) as pub_date_date,
+        time(safe_cast(pubDate as timestamp)) as pub_date_time,
         pubDateTZ as pub_date_tz,
         safe_cast(fetched_at as timestamp) as fetched_at,
+        date(safe_cast(fetched_at as timestamp)) as fetched_at_date,
+        time(safe_cast(fetched_at as timestamp)) as fetched_at_time,
         image_url,
         video_url,
         source_id,
@@ -29,7 +29,9 @@ renamed as (
         source_url,
         source_icon,
         duplicate,
-        safe_cast(extracted_at as timestamp) as extracted_at
+        safe_cast(extracted_at as timestamp) as extracted_at,
+        date(safe_cast(extracted_at as timestamp)) as extracted_at_date,
+        time(safe_cast(extracted_at as timestamp)) as extracted_at_time
     from source
     where title is not null
 )
