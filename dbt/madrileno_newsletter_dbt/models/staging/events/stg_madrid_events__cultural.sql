@@ -10,7 +10,7 @@ renamed as (
         title,
         description,
         free,
-        cast(price as float) as price,
+        safe_cast(price as float64) as price,
         dtstart,
         date(safe_cast(dtstart as timestamp)) as dtstart_date,
         dtend,
