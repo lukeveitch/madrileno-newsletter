@@ -34,8 +34,8 @@ renamed as (
         location_latitude,
         location_longitude,
         organization_organization_name,
-        organization_accesibility,
-        audience
+        organization_accesibility
+        
     from source
     where title is not null
 )
