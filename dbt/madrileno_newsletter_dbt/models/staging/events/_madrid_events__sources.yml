@@ -1,0 +1,10 @@
+version: 2
+
+sources:
+  - name: news_data
+    database: "{{ var('madrid-newsletter') }}"
+    tables:
+      - name: general_events_raw
+        description: "General events from Madrid open data / esMadrid ayuntamiento API"
+      - name: cultural_events_raw
+        description: "Cultural events from Madrid open data / esMadrid ayuntamiento API"
