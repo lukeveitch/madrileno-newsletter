@@ -30,6 +30,6 @@ models:
       +tags: ['silver']
 
     gold:
-      +materialized: table
+      +materialized: view
       +schema: gold
       +tags: ['gold']
